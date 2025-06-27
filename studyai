@@ -1,0 +1,237 @@
+
+import { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
+import { PenTool, FileText, Brain, TrendingUp, Target, Clock, Award, BookOpen } from 'lucide-react';
+import GoalTracker from '@/components/GoalTracker';
+import WritingChecker from '@/components/WritingChecker';
+import TestGenerator from '@/components/TestGenerator';
+import StudyPlanner from '@/components/StudyPlanner';
+import ProgressTracker from '@/components/ProgressTracker';
+
+const Index = () => {
+  const [activeTab, setActiveTab] = useState('overview');
+
+  // Mock data for dashboard overview
+  const studyStats = {
+    dailyGoal: 120,
+    completedToday: 85,
+    weeklyProgress: 78,
+    totalStudyTime: 2340,
+    testsCompleted: 12,
+    writingChecks: 25,
+    currentStreak: 7
+  };
+
+  const upcomingExams = [
+    { name: 'IELTS Academic', date: '2024-02-15', daysLeft: 28 },
+    { name: 'TOEFL iBT', date: '2024-03-10', daysLeft: 52 }
+  ];
+
+  const navigationItems = [
+    { id: 'overview', label: 'Overview', icon: TrendingUp },
+    { id: 'planner', label: 'AI Planner', icon: Brain },
+    { id: 'writing', label: 'Writing', icon: PenTool },
+    { id: 'tests', label: 'Tests', icon: FileText },
+    { id: 'goals', label: 'Goals', icon: Target },
+    { id: 'progress', label: 'Progress', icon: Award }
+  ];
+
+  return (
+    <div className="min-h-screen bg-white">
+      <div className="container mx-auto px-4 py-6">
+        {/* Header */}
+        <div className="mb-8 text-center">
+          <h1 className="text-4xl font-bold text-black mb-2">Study Assistant</h1>
+          <p className="text-gray-600">IELTS • TOEFL • TOPIK Preparation</p>
+        </div>
+
+        {/* Navigation */}
+        <div className="mb-8">
+          <div className="flex flex-wrap justify-center gap-2 p-2 bg-gray-50 rounded-lg border">
+            {navigationItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <Button
+                  key={item.id}
+                  variant={activeTab === item.id ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setActiveTab(item.id)}
+                  className={`flex items-center gap-2 ${
+                    activeTab === item.id 
+                      ? 'bg-black text-white hover:bg-gray-800' 
+                      : 'text-gray-600 hover:text-black hover:bg-gray-100'
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  <span className="hidden sm:inline">{item.label}</span>
+                </Button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Content */}
+        {activeTab === 'overview' && (
+          <div className="space-y-6">
+            {/* Stats Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <Card className="border-gray-200">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-black rounded-lg">
+                      <Clock className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">Today</p>
+                      <p className="text-2xl font-bold text-black">{studyStats.completedToday}min</p>
+                    </div>
+                  </div>
+                  <Progress 
+                    value={(studyStats.completedToday / studyStats.dailyGoal) * 100} 
+                    className="mt-3 h-2"
+                  />
+                </CardContent>
+              </Card>
+
+              <Card className="border-gray-200">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-black rounded-lg">
+                      <TrendingUp className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">Week</p>
+                      <p className="text-2xl font-bold text-black">{studyStats.weeklyProgress}%</p>
+                    </div>
+                  </div>
+                  <Progress value={studyStats.weeklyProgress} className="mt-3 h-2" />
+                </CardContent>
+              </Card>
+
+              <Card className="border-gray-200">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-black rounded-lg">
+                      <FileText className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">Tests</p>
+                      <p className="text-2xl font-bold text-black">{studyStats.testsCompleted}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-gray-200">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-black rounded-lg">
+                      <Award className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">Streak</p>
+                      <p className="text-2xl font-bold text-black">{studyStats.currentStreak} days</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Quick Actions */}
+            <Card className="border-gray-200">
+              <CardHeader>
+                <CardTitle className="text-black">Quick Actions</CardTitle>
+                <CardDescription>Jump into your study session</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <Button 
+                    onClick={() => setActiveTab('planner')}
+                    className="h-20 bg-black hover:bg-gray-800 text-white flex flex-col gap-2"
+                  >
+                    <Brain className="h-6 w-6" />
+                    Generate Study Plan
+                  </Button>
+                  <Button 
+                    onClick={() => setActiveTab('writing')}
+                    variant="outline"
+                    className="h-20 border-gray-300 hover:bg-gray-50 flex flex-col gap-2"
+                  >
+                    <PenTool className="h-6 w-6" />
+                    Check Writing
+                  </Button>
+                  <Button 
+                    onClick={() => setActiveTab('tests')}
+                    variant="outline"
+                    className="h-20 border-gray-300 hover:bg-gray-50 flex flex-col gap-2"
+                  >
+                    <FileText className="h-6 w-6" />
+                    Take Practice Test
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Upcoming Exams */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="border-gray-200">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-black">
+                    <BookOpen className="h-5 w-5" />
+                    Upcoming Exams
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {upcomingExams.map((exam, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border">
+                      <div>
+                        <h4 className="font-semibold text-black">{exam.name}</h4>
+                        <p className="text-sm text-gray-600">{exam.date}</p>
+                      </div>
+                      <Badge 
+                        variant={exam.daysLeft <= 30 ? "destructive" : "secondary"}
+                        className={exam.daysLeft <= 30 ? "bg-black text-white" : ""}
+                      >
+                        {exam.daysLeft} days
+                      </Badge>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+
+              <Card className="border-gray-200">
+                <CardHeader>
+                  <CardTitle className="text-black">Recent Activity</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {[
+                    { action: 'Completed IELTS Writing Task 2', time: '2 hours ago' },
+                    { action: 'Generated study plan', time: '1 day ago' },
+                    { action: 'Practice test score: 7.5', time: '2 days ago' },
+                    { action: 'Updated daily goal', time: '3 days ago' }
+                  ].map((activity, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border">
+                      <span className="text-sm text-black">{activity.action}</span>
+                      <span className="text-xs text-gray-500">{activity.time}</span>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'planner' && <StudyPlanner />}
+        {activeTab === 'writing' && <WritingChecker />}
+        {activeTab === 'tests' && <TestGenerator />}
+        {activeTab === 'goals' && <GoalTracker />}
+        {activeTab === 'progress' && <ProgressTracker />}
+      </div>
+    </div>
+  );
+};
+
+export default Index;
